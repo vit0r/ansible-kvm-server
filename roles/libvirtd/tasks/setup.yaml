@@ -55,6 +55,16 @@
     chdir: $HOME
     creates: timedatectl.log
 
+- name: check if interfaces exists
+  stat:
+    path: /etc/network/interfaces
+  register: interfaces
+
+- name: Print a debug message
+  debug:
+    msg: "interfaces defined"
+  when: interfaces.stat.exists == False
+
 - name: put k8s modules templates
   template:
     src: "{{ item.src }}"
@@ -62,6 +72,7 @@
     mode: 0760
   with_items:
     - { "src": "interfaces.j2", "dest": "/etc/network/interfaces" }
+  when: interfaces.stat.exists == False
 
 - name: modprobes turn on
   modprobe:
