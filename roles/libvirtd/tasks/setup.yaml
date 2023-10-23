@@ -112,7 +112,7 @@
 - name: disable masked sleep tasks
   systemd:
     name: "{{ item }}"
-    enabled: disable
+    enabled: no
     masked: yes
   with_items:
     - sleep.target

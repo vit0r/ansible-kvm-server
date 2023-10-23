@@ -7,7 +7,4 @@
     location: http://ftp.{{ os_name }}.org/{{ os_name }}/dists/{{ os_codename }}/main/installer-amd64/
     ram: 1024
     vcpus: 1
-  shell: "virt-install --name {{ name }} --ram {{ ram }} --vcpus {{ vcpus }} --network bridge=br0 --graphics none --console pty,target_type=serial --osinfo generic --location {{ location }} --disk path=/var/lib/libvirt/images/{{ name }}-{{ os_name }}-{{ os_version }}-vm.qcow2,size=20"
-
-- name: testing virt-list all
-  shell: virsh list --all
+  shell: "virt-install -q --name {{ name }} --ram {{ ram }} --vcpus {{ vcpus }} --network bridge=br0 --autoconsole graphical --osinfo generic --location {{ location }} --disk path=/var/lib/libvirt/images/{{ name }}-{{ os_name }}-{{ os_version }}-vm.qcow2,size=20"
