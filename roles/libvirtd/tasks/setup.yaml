@@ -1,0 +1,121 @@
+- name: set new hostname
+  hostname:
+    name: "{{ ansible_ssh_host | replace('.','') }}"
+    use: systemd
+
+- name: update packages
+  package:
+    name: "*"
+    state: latest
+    update_cache: yes
+    autoclean: yes
+
+- name: install commons packages
+  package:
+    update_cache: yes
+    state: present
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - curl
+      - wget
+      - htop
+      - python3-minimal
+      - net-tools
+      - build-essential
+      - ca-certificates
+      - vim
+      - nfs-common
+      - rsyslog
+      - libvirt-clients
+      - sudo
+      - apt-transport-https
+      - gpg
+      - qemu-kvm
+      - libvirt-daemon
+      - bridge-utils
+      - virtinst
+      - libvirt-daemon-system
+      - libguestfs-tools
+      - libosinfo-bin
+      - qemu-system
+
+- name: remove commons packages
+  package:
+    update_cache: yes
+    state: absent
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - iptables-persistent
+
+- name: set-timezone America/Sao_Paulo
+  shell: timedatectl set-timezone America/Sao_Paulo
+  args:
+    chdir: $HOME
+    creates: timedatectl.log
+
+- name: put k8s modules templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0760
+  with_items:
+    - { "src": "interfaces.j2", "dest": "/etc/network/interfaces" }
+
+- name: modprobes turn on
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - overlay
+    - br_netfilter
+    - vhost_net
+
+- name: disable swapoff > swapoff.log
+  shell: swapoff -a
+  args:
+    chdir: $HOME
+    creates: swapoff.log
+
+- name: sysctl
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+  with_items:
+    - { "name": "net.bridge.bridge-nf-call-ip6tables", "value": "0" }
+    - { "name": "net.bridge.bridge-nf-call-iptables", "value": "1" }
+    - { "name": "net.ipv4.ip_forward", "value": "1" }
+
+- name: /etc/libvirt/qemu.conf
+  replace:
+    path: /etc/libvirt/qemu.conf
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+  with_items:
+    - {
+        "regexp": '#security_driver = "selinux"',
+        "replace": '#security_driver = "none"',
+      }
+
+- name: enable and restart services
+  systemd:
+    daemon_reload: yes
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items:
+    - libvirtd
+    - networking
+
+- name: disable masked sleep tasks
+  systemd:
+    name: "{{ item }}"
+    enabled: disable
+    masked: yes
+  with_items:
+    - sleep.target
+    - suspend.target
+    - hibernate.target
+    - hybrid-sleep.target

@@ -1,0 +1,14 @@
+- hosts: servers
+  become_user: root
+  remote_user: root
+  become: yes
+  vars:
+    network_interface_name: "enp3s0"
+    address: "192.168.100.49"
+    network: "192.168.100.0"
+    netmask: "255.255.255.0"
+    broadcast: "192.168.100.255"
+    gateway: "192.168.100.1"
+    dns_nameservers: "8.8.8.8 8.8.4.4"
+  roles:
+    - { role: libvirtd }

@@ -1,0 +1,12 @@
+auto {{ network_interface_name }}
+iface {{ network_interface_name }} inet manual
+auto br0
+iface br0 inet static
+bridge_ports {{ network_interface_name }}
+bridge_stp off
+address {{ address }}
+network {{ network }}
+netmask {{ netmask }}
+broadcast {{ broadcast }}
+gateway {{ gateway }}
+dns-nameservers {{ dns_nameservers }}
