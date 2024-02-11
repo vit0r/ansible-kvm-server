@@ -2,4 +2,4 @@ all:
   children:
     servers:
       hosts:
-        kvm3:
+        kvmok:
