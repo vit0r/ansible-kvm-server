@@ -8,3 +8,20 @@
     ram: 1024
     vcpus: 1
   shell: "virt-install -q --name {{ name }} --ram {{ ram }} --vcpus {{ vcpus }} --network bridge=br0 --autoconsole graphical --osinfo generic --location {{ location }} --disk path=/var/lib/libvirt/images/{{ name }}-{{ os_name }}-{{ os_version }}-vm.qcow2,size=20"
+  ignore_errors: true
+
+- name: start
+  vars:
+    name: testing
+  shell: "virsh start --domain {{ name }}"
+  ignore_errors: true
+
+- name: list
+  shell: "virsh list --all"
+  ignore_errors: true
+
+- name: destroy
+  vars:
+    name: testing
+  shell: "virsh destroy --domain {{ name }}"
+  ignore_errors: true
