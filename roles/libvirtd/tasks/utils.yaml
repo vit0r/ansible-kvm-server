@@ -1,0 +1,19 @@
+- name: download kubectl
+  vars:
+    kubectl_version: v1.28.1
+  get_url:
+    url: https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl
+    dest: /usr/local/bin/
+    owner: "{{ ansible_ssh_user }}"
+    mode: 0770
+
+- name: download k9s
+  vars:
+    k9s_version: v0.31.9
+  unarchive:
+    src: "https://github.com/derailed/k9s/releases/download/{{ k9s_version }}/k9s_Linux_amd64.tar.gz"
+    dest: /usr/local/bin/
+    remote_src: yes
+    owner: "{{ remote_user }}"
+    group: root
+    mode: "0770"

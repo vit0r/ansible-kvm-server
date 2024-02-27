@@ -1,3 +1,9 @@
+- name: destroy
+  vars:
+    name: testing
+  shell: "virsh destroy --domain {{ name }} --graceful"
+  ignore_errors: true
+
 - name: testing virt-install
   vars:
     os_name: debian
@@ -18,10 +24,4 @@
 
 - name: list
   shell: "virsh list --all"
-  ignore_errors: true
-
-- name: destroy
-  vars:
-    name: testing
-  shell: "virsh destroy --domain {{ name }}"
   ignore_errors: true

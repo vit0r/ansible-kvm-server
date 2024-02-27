@@ -1,8 +1,8 @@
 auto lo
-iface {{ bridge_ports }} inet dhcp
+iface {{ physical_interface }} inet dhcp
 auto br0
 iface br0 inet static
-bridge_ports {{ bridge_ports }}
+bridge_ports {{ physical_interface }}
 bridge_stp off
 address {{ ansible_default_ipv4.address }}
 network {{ ansible_default_ipv4.network }}

@@ -2,7 +2,5 @@
   become_user: root
   remote_user: cpd
   become: yes
-  vars:
-    bridge_ports: enp5s0
   roles:
     - { role: libvirtd }

@@ -39,6 +39,8 @@
       - libguestfs-tools
       - libosinfo-bin
       - qemu-system
+      - virt-manager
+      - git
 
 - name: remove commons packages
   package:
@@ -55,7 +57,13 @@
     chdir: $HOME
     creates: timedatectl.log
 
+- name: get up link interfaces names
+  shell: 'ip link show | grep -m 1 "2: .* <BROADCAST,MULTICAST,UP,LOWER_UP>" | cut -d " " -f 2'
+  register: uplink_interface
+
 - name: put k8s modules templates
+  vars:
+    physical_interface: '{{ uplink_interface.stdout | replace(":", "") }}'
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -119,3 +127,6 @@
     - suspend.target
     - hibernate.target
     - hybrid-sleep.target
+
+- name: net autostart default
+  shell: "virsh net-autostart default"
