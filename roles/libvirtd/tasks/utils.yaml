@@ -17,3 +17,22 @@
     owner: "{{ ansible_ssh_user }}"
     group: root
     mode: "0770"
+
+- name: terraform cli
+  block:
+    - name: download
+      vars:
+        terraform_version: 1.7.4
+      get_url:
+        url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
+        dest: /tmp/terraform.zip
+        owner: "{{ ansible_ssh_user }}"
+        mode: 0770
+    - name: unzip
+      unarchive:
+        src: /tmp/terraform.zip
+        dest: /usr/local/bin/
+        remote_src: yes
+        owner: "{{ ansible_ssh_user }}"
+        group: root
+        mode: "0770"

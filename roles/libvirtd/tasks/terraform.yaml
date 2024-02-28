@@ -1,0 +1,10 @@
+- name: run terraform
+  block:
+    - name: init
+      shell: terraform init -upgrade
+      args:
+        chdir: /src/terraform-kvm
+    - name: apply
+      shell: terraform apply -auto-approve
+      args:
+        chdir: /src/terraform-kvm

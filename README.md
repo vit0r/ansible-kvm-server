@@ -1,6 +1,6 @@
 # KVM server
 
-## pre-reqs
+## pre-reques
 
 ## Run playbook
 

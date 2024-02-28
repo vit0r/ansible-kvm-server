@@ -1,0 +1,6 @@
+- name: clone terraform libvirt
+  git:
+    repo: https://github.com/vit0r/terraform-kvm.git
+    dest: /src/terraform-kvm
+    single_branch: yes
+    version: main

@@ -41,6 +41,7 @@
       - qemu-system
       - virt-manager
       - git
+      - unzip
 
 - name: remove commons packages
   package:
