@@ -42,6 +42,8 @@
       - virt-manager
       - git
       - unzip
+      - mkisofs
+      - qemu-guest-agent
 
 - name: remove commons packages
   package:
@@ -129,20 +131,28 @@
     - hibernate.target
     - hybrid-sleep.target
 
-- name: create dir /vms for use default pool
-  file:
-    path: /vms
-    state: directory
-    owner: "{{ ansible_ssh_user }}"
-    group: "root"
-    mode: "0770"
-
 - name: net autostart default
   shell: "virsh net-autostart default"
 
-- name: create default pool and auto-start
+- name: default pool [create,build, start and auto-start]
   block:
     - name: create default pool
-      shell: virsh pool-define-as default dir - - - - /vms
+      shell: virsh pool-define-as default dir - - - - /var/lib/libvirt/images > defaultpool.log
+      args:
+        chdir: $HOME
+        creates: defaultpool.log
+    - name: build default pool
+      shell: virsh pool-build default > builddefaultpool.log
+      args:
+        chdir: $HOME
+        creates: builddefaultpool.log
+    - name: start default pool
+      shell: virsh pool-start default > startdefaultpool.log
+      args:
+        chdir: $HOME
+        creates: startdefaultpool.log
     - name: auto-start default pool
-      shell: virsh pool-autostart default
+      shell: virsh pool-autostart default > startdefaultpool.log
+      args:
+        chdir: $HOME
+        creates: autostartdefaultpool.log
