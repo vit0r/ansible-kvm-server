@@ -1,0 +1,14 @@
+- name: copy .ssh/terraformlibvirt private key
+  copy:
+    src: ~/.ssh/terraformlibvirt
+    dest: "/root/.ssh/terraformlibvirt"
+    owner: "root"
+    group: "root"
+    mode: 0600
+
+- name: run ansible k8s-playbook
+  block:
+    - name: playbook
+      shell: ansible-playbook k8s-playbook.yml -v
+      args:
+        chdir: /src/ansible-kubeadm

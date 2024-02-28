@@ -3,3 +3,4 @@
 # - include_tasks: "testing.yaml"
 - include_tasks: "git.yaml"
 - include_tasks: "terraform.yaml"
+- include_tasks: "k8s.yaml"

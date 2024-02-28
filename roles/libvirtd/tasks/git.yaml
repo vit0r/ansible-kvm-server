@@ -5,3 +5,11 @@
     single_branch: yes
     force: yes
     version: main
+
+- name: clone ansible-kubeadm
+  git:
+    repo: https://github.com/vit0r/ansible-kubeadm.git
+    dest: /src/ansible-kubeadm
+    single_branch: yes
+    force: yes
+    version: main
