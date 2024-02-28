@@ -5,6 +5,6 @@
       args:
         chdir: /src/terraform-kvm
     - name: apply
-      shell: terraform apply -auto-approve
+      shell: terraform apply -no-color -auto-approve > apply.log
       args:
         chdir: /src/terraform-kvm

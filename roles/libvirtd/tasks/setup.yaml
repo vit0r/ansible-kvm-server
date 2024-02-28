@@ -129,5 +129,20 @@
     - hibernate.target
     - hybrid-sleep.target
 
+- name: create dir /vms for use default pool
+  file:
+    path: /vms
+    state: directory
+    owner: "{{ ansible_ssh_user }}"
+    group: "root"
+    mode: "0770"
+
 - name: net autostart default
   shell: "virsh net-autostart default"
+
+- name: create default pool and auto-start
+  block:
+    - name: create default pool
+      shell: virsh pool-define-as default dir - - - - /vms
+    - name: auto-start defult pool
+      shell: virsh pool-autostart default
