@@ -1,4 +1,4 @@
-- name: clone terraform libvirt
+- name: clone repo terraform-kvm
   git:
     repo: https://github.com/vit0r/terraform-kvm.git
     dest: /src/terraform-kvm
@@ -6,10 +6,18 @@
     force: yes
     version: main
 
-- name: clone ansible-kubeadm
+- name: clone repo ansible-kubeadm
   git:
     repo: https://github.com/vit0r/ansible-kubeadm.git
     dest: /src/ansible-kubeadm
+    single_branch: yes
+    force: yes
+    version: main
+
+- name: clone repo argocd-appsets
+  git:
+    repo: https://github.com/vit0r/argocd-appsets.git
+    dest: /src/argocd-appsets
     single_branch: yes
     force: yes
     version: main

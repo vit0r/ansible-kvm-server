@@ -1,0 +1,11 @@
+- name: run argocd appset
+  block:
+    - name: create
+      shell: ls *.yaml
+      args:
+        chdir: /src/argocd-appsets
+    - name: apply
+      ignore_errors: true
+      shell: terraform apply -no-color -auto-approve > apply.log
+      args:
+        chdir: /src/argocd-appsets

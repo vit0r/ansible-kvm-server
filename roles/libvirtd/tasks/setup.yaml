@@ -121,14 +121,6 @@
     - libvirtd
     - networking
 
-- name: enable and restart qemu-guest-agent
-  ignore_errors: true
-  systemd:
-    daemon_reload: yes
-    name: qemu-guest-agent
-    state: restarted
-    enabled: yes
-
 - name: disable masked sleep tasks
   systemd:
     name: "{{ item }}"
@@ -165,3 +157,6 @@
       args:
         chdir: $HOME
         creates: autostartdefaultpool.log
+
+- name: remove ~/.ssh/known_hosts
+  shell: rm -f $HOME/.ssh/known_hosts

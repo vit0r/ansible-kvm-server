@@ -7,8 +7,17 @@
     mode: 0600
 
 - name: run ansible k8s-playbook
+  shell: ansible-playbook k8s-playbook.yml -v
+  args:
+    chdir: /src/ansible-kubeadm
+
+- name: kubeconfig
   block:
-    - name: playbook
-      shell: ansible-playbook k8s-playbook.yml -v
+    - name: create ~/.kube directory
+      file:
+        state: directory
+        name: $HOME/.kube
+    - name: copy
+      shell: scp -i ~/.ssh/terraformlibvirt debian@192.168.124.10:/home/debian/.kube/config ~/.kube/config
       args:
         chdir: /src/ansible-kubeadm
