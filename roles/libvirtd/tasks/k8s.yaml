@@ -1,6 +1,6 @@
-- name: copy .ssh/terraformlibvirt private key
+- name: copy /src/terraform-kvm/terraformlibvirt private key
   copy:
-    src: ~/.ssh/terraformlibvirt
+    src: /src/terraform-kvm/terraformlibvirt
     dest: "/root/.ssh/terraformlibvirt"
     owner: "root"
     group: "root"
@@ -18,6 +18,6 @@
         state: directory
         name: $HOME/.kube
     - name: copy
-      shell: scp -i ~/.ssh/terraformlibvirt debian@192.168.124.10:/home/debian/.kube/config ~/.kube/config
+      shell: scp -i /src/terraform-kvm/terraformlibvirt debian@192.168.124.10:/home/debian/.kube/config ~/.kube/config
       args:
         chdir: /src/ansible-kubeadm
