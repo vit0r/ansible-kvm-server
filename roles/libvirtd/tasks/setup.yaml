@@ -62,7 +62,7 @@
     creates: timedatectl.log
 
 - name: get up link interfaces names
-  shell: 'ip link show | grep -m 1 "2: .* <BROADCAST,MULTICAST,UP,LOWER_UP>" | cut -d " " -f 2'
+  shell: 'ip link show | grep -m 1 "state UP" | cut -d " " -f 2'
   register: uplink_interface
 
 - name: put k8s modules templates
