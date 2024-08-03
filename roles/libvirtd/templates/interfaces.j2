@@ -1,12 +1,10 @@
 auto lo
-iface {{ physical_interface }} inet dhcp
+iface lo inet loopback
+
+{% for item in physical_interfaces %}
+  iface {{ item }} inet dhcp
+{% endfor %}
+
 auto br0
-iface br0 inet static
-bridge_ports {{ physical_interface }}
-bridge_stp off
-address {{ ansible_default_ipv4.address }}
-network {{ ansible_default_ipv4.network }}
-netmask {{ ansible_default_ipv4.netmask }}
-broadcast {{ ansible_default_ipv4.broadcast }}
-gateway {{ ansible_default_ipv4.gateway }}
-dns-nameservers {{ ansible_default_ipv4.gateway }}
+iface br0 inet dhcp
+    bridge_ports {{ physical_interfaces | join(' ') }}

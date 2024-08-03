@@ -32,6 +32,7 @@
       - apt-transport-https
       - gpg
       - qemu-kvm
+      - cpu-checker
       - libvirt-daemon
       - bridge-utils
       - virtinst
@@ -61,13 +62,13 @@
     chdir: $HOME
     creates: timedatectl.log
 
-- name: get up link interfaces names
-  shell: 'ip link show | grep -m 1 "state UP" | cut -d " " -f 2'
-  register: uplink_interface
+# - name: get up link interfaces names
+#   shell: 'ip link show | grep -m 1 "state UP" | cut -d " " -f 2'
+#   register: uplink_interface
 
-- name: put k8s modules templates
-  vars:
-    physical_interface: '{{ uplink_interface.stdout | replace(":", "") }}'
+- name: put interfaces template
+  # vars:
+  #   physical_interface: '{{ uplink_interface.stdout | replace(":", "") }}'
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
