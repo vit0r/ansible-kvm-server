@@ -45,6 +45,15 @@
       - unzip
       - mkisofs
       - qemu-guest-agent
+      - spice-vdagent
+
+- name: create a symbolic link kvm-spice
+  file:
+    src: /usr/bin/qemu-system-x86_64
+    dest: /usr/bin/kvm-spice
+    owner: root
+    group: cpd
+    state: link
 
 - name: remove commons packages
   package:
