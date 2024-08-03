@@ -45,7 +45,6 @@
       - unzip
       - mkisofs
       - qemu-guest-agent
-      - ansible
 
 - name: remove commons packages
   package:
@@ -109,7 +108,7 @@
   with_items:
     - {
         "regexp": '#security_driver = "selinux"',
-        "replace": 'security_driver = "none"',
+        "replace": 'security_driver = "apparmor"',
       }
 
 - name: enable and restart services
