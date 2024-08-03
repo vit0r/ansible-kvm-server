@@ -2,7 +2,7 @@ auto lo
 iface lo inet loopback
 
 {% for item in physical_interfaces %}
-  iface {{ item }} inet dhcp
+iface {{ item }} inet dhcp
 {% endfor %}
 
 auto br0
