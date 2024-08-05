@@ -46,6 +46,7 @@
       - mkisofs
       - qemu-guest-agent
       - spice-vdagent
+      - ifenslave
 
 - name: create a symbolic link kvm-spice
   file:
@@ -82,7 +83,7 @@
     dest: "{{ item.dest }}"
     mode: 0760
   with_items:
-    - { "src": "interfaces.j2", "dest": "/etc/network/interfaces" }
+    - { "src": "interfaces.j2", "dest": "/etc/network/interfaces3" }
 
 - name: modprobes turn on
   modprobe:

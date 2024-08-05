@@ -1,10 +1,19 @@
 auto lo
 iface lo inet loopback
 
-{% for item in physical_interfaces %}
-iface {{ item }} inet dhcp
-{% endfor %}
+auto bond0
+iface bond0 inet static
+address 192.168.1.7
+gateway 192.168.1.1
+netmask 255.255.255.0
+dns-nameservers 192.168.1.1
+bond-mode 4
+bond-miimon 100
+bond-lacp-rate 1
+  bond-slaves {{ physical_interfaces | join(' ') }}
 
-auto br0
-iface br0 inet dhcp
-    bridge_ports {{ physical_interfaces | join(' ') }}
+{% for item in physical_interfaces %}
+auto {{ item }}
+iface {{ item }} inet manual
+bond-master bond0
+{% endfor %}
