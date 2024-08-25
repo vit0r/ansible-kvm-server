@@ -2,11 +2,7 @@ auto lo
 iface lo inet loopback
 
 auto bond0
-iface bond0 inet static
-address 192.168.1.7
-gateway 192.168.1.1
-netmask 255.255.255.0
-dns-nameservers 192.168.1.1
+iface bond0 inet dhcp
 bond-mode 4
 bond-miimon 100
 bond-lacp-rate 1
