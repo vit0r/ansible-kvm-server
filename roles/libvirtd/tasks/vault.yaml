@@ -1,0 +1,17 @@
+- name: vault cli
+  block:
+    - name: download
+      vars:
+        vault_version: 1.19.1
+      get_url:
+        url: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
+        dest: /tmp/vault.zip
+        owner: root
+        mode: 0770
+    - name: unzip
+      unarchive:
+        src: /tmp/vault.zip
+        dest: /usr/local/bin/
+        remote_src: yes
+        owner: root
+        mode: 0770
