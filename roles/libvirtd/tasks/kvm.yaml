@@ -47,13 +47,14 @@
       - qemu-guest-agent
       - spice-vdagent
       - ifenslave
+      - rsync
 
 - name: create a symbolic link kvm-spice
   file:
     src: /usr/bin/qemu-system-x86_64
     dest: /usr/bin/kvm-spice
     owner: root
-    group: cpd
+    group: vitor
     state: link
 
 - name: remove commons packages
@@ -71,19 +72,18 @@
     chdir: $HOME
     creates: timedatectl.log
 
-# - name: get up link interfaces names
-#   shell: 'ip link show | grep -m 1 "state UP" | cut -d " " -f 2'
-#   register: uplink_interface
-
 - name: put interfaces template
-  # vars:
-  #   physical_interface: '{{ uplink_interface.stdout | replace(":", "") }}'
+  vars:
+    address: 192.168.100.2
+    gateway: 192.168.100.1
+    netmask: 255.255.255.0
+    dns_nameservers: 192.168.100.1
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     mode: 0760
   with_items:
-    - { "src": "interfaces.j2", "dest": "/etc/network/interfaces3" }
+    - { "src": "interfaces.j2", "dest": "/etc/network/interfaces" }
 
 - name: modprobes turn on
   modprobe:
@@ -117,8 +117,8 @@
     replace: "{{ item.replace }}"
   with_items:
     - {
-        "regexp": '#security_driver = "selinux"',
-        "replace": 'security_driver = "apparmor"',
+        "regexp": '#security_driver = ".*"',
+        "replace": 'security_driver = "none"',
       }
 
 - name: enable and restart services
@@ -144,6 +144,29 @@
 
 - name: net autostart default
   shell: "virsh net-autostart default"
+
+- name: put internal-network template
+  vars:
+    address: 192.168.50.1
+    netmask: 255.255.255.0
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0760
+  with_items:
+    - {
+        "src": "kvm_internal_network.xml.j2",
+        "dest": "/etc/libvirt/kvm_internal_network.xml",
+      }
+
+- name: init internal-network
+  shell: |
+    virsh net-define /etc/libvirt/kvm_internal_network.xml
+    virsh net-start internal-network
+    virsh net-autostart internal-network
+  args:
+    chdir: $HOME
+    creates: kvm_internal_network.log
 
 - name: default pool [create,build, start and auto-start]
   block:

@@ -1,29 +1,46 @@
-- name: copy /src/terraform-kvm/terraformlibvirt private key
-  copy:
-    remote_src: yes
-    src: /src/terraform-kvm/terraformlibvirt
-    dest: "$HOME/.ssh/terraformlibvirt"
-    owner: "root"
-    group: "root"
-    mode: 0600
-
-- name: Sleep for 300 seconds and continue with play
-  wait_for:
-    timeout: 240
-  delegate_to: localhost
-
-- name: run ansible k8s-playbook
-  shell: ansible-playbook k8s-playbook.yml -v
-  args:
-    chdir: /src/ansible-kubeadm
-
-- name: kubeconfig
+- name: setup kubeadm
   block:
+    - name: clone repo ansible-kubeadm
+      git:
+        repo: https://github.com/vit0r/ansible-kubeadm.git
+        dest: /src/ansible-kubeadm
+        single_branch: yes
+        force: yes
+        version: main
+    - name: copy /src/terraform-kvm/terraformlibvirt private key
+      copy:
+        remote_src: yes
+        src: /src/terraform-kvm/terraformlibvirt
+        dest: "$HOME/.ssh/terraformlibvirt"
+        owner: "root"
+        group: "root"
+        mode: 0600
+    - name: Sleep for 300 seconds and continue with play
+      wait_for:
+        timeout: 240
+      delegate_to: localhost
+    - name: run ansible k8s-playbook
+      shell: ansible-playbook k8s-playbook.yml -v
+      args:
+        chdir: /src/ansible-kubeadm
     - name: create ~/.kube directory
       file:
         state: directory
         name: $HOME/.kube
-    - name: copy
-      shell: scp -i $HOME/.ssh/terraformlibvirt debian@192.168.124.10:/home/debian/.kube/config ~/.kube/config
-      args:
-        chdir: /src/ansible-kubeadm
+    - name: download kubectl
+      vars:
+        kubectl_version: v1.32.3
+      get_url:
+        url: "https://dl.k8s.io/release/{{kubectl_version}}/bin/linux/amd64/kubectl"
+        dest: /usr/local/bin/
+        owner: root
+        mode: 0770
+    - name: download k9s
+      vars:
+        k9s_version: v0.40.10
+      unarchive:
+        src: "https://github.com/derailed/k9s/releases/download/{{ k9s_version }}/k9s_Linux_amd64.tar.gz"
+        dest: /usr/local/bin/
+        remote_src: yes
+        owner: root
+        mode: 0770

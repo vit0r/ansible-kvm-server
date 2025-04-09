@@ -1,5 +1,27 @@
-- name: run terraform
+- name: setup terraform
   block:
+    - name: download
+      vars:
+        terraform_version: 1.11.3
+      get_url:
+        url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
+        dest: /tmp/terraform.zip
+        owner: root
+        mode: 0770
+    - name: unzip
+      unarchive:
+        src: /tmp/terraform.zip
+        dest: /usr/local/bin/
+        remote_src: yes
+        owner: root
+        mode: "0770"
+    - name: clone repo terraform-kvm
+      git:
+        repo: https://github.com/vit0r/terraform-kvm.git
+        dest: /src/terraform-kvm
+        single_branch: yes
+        force: yes
+        version: main
     - name: init
       shell: terraform init -upgrade
       args:

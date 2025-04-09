@@ -2,7 +2,11 @@ auto lo
 iface lo inet loopback
 
 auto bond0
-iface bond0 inet dhcp
+iface bond0 inet static
+address {{address}}
+gateway {{gateway}}
+netmask {{netmask}}
+dns-nameservers {{dns_nameservers}}
 bond-mode 4
 bond-miimon 100
 bond-lacp-rate 1
